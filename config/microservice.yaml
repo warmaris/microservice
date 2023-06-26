@@ -1,0 +1,6 @@
+connections:
+  db:
+    user: root
+    password: rootpasswd
+    addr: localhost:3306
+    name: microservice
