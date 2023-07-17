@@ -1,3 +1,5 @@
+// Package server represents mostly used incoming port.
+// There is http server with router, but it could be a grpc server, or tcp with custom protocol.
 package server
 
 import (

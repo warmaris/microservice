@@ -1,3 +1,7 @@
+// Package database is a wrapper for sqlx database connection.
+// Here we can see a base interface of connection that is implemented by connection pool and transaction object.
+// Feature packages implement own storages which are using the connection interface. So, we can switch between base
+// connection and transaction dynamically.
 package database
 
 import (
