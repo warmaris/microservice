@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 func InitConfig() error {
@@ -28,4 +29,8 @@ func GetDB() string {
 	}
 
 	return mysqlconf.FormatDSN()
+}
+
+func GetKafkaBrokers() []string {
+	return strings.Split(viper.GetString("connections.kafka.brokers"), ",")
 }

@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package microservice;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "microservice/pkg/v1";
+
+service ExibilliaService {
+  rpc Get(GetExibilliaRequest) returns (GetExibilliaResponse) {}
+  rpc Create(CreateExibilliaRequest) returns (CreateExibilliaResponse) {}
+  rpc Update(UpdateExibilliaRequest) returns (google.protobuf.Empty) {}
+  rpc Delete(DeleteExibilliaRequest) returns (google.protobuf.Empty) {}
+}
+
+message GetExibilliaRequest {
+  uint64 id = 1;
+}
+
+message GetExibilliaResponse {
+  Exibillia exibillia = 1;
+}
+
+message CreateExibilliaRequest {
+  string name = 1;
+  string description = 2;
+  repeated string tags = 3;
+}
+
+message CreateExibilliaResponse {
+  uint64 id = 1;
+}
+
+message UpdateExibilliaRequest {
+  uint64 id = 1;
+  string description = 2;
+  repeated string tags = 3;
+}
+
+message DeleteExibilliaRequest {
+  uint64 id = 1;
+}
+
+message Exibillia {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string tags = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}

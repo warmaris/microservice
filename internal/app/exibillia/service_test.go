@@ -36,15 +36,21 @@ func (s *ServiceTestSuite) TestCreate() {
 	testErr := errors.New("test error")
 
 	s.Run("success", func() {
-		s.storage.EXPECT().create(gomock.Any(), entity).Return(nil)
+		s.storage.EXPECT().create(gomock.Any(), entity).Return(1, nil)
 
-		assert.NoError(s.T(), s.service.Create(context.Background(), entity))
+		res, err := s.service.Create(context.Background(), entity)
+
+		assert.NoError(s.T(), err)
+		assert.Equal(s.T(), 1, res)
 	})
 
 	s.Run("storage error - return it", func() {
-		s.storage.EXPECT().create(gomock.Any(), entity).Return(testErr)
+		s.storage.EXPECT().create(gomock.Any(), entity).Return(0, testErr)
 
-		assert.ErrorIs(s.T(), s.service.Create(context.Background(), entity), testErr)
+		res, err := s.service.Create(context.Background(), entity)
+
+		assert.ErrorIs(s.T(), err, testErr)
+		assert.Zero(s.T(), res)
 	})
 }
 
@@ -107,26 +113,23 @@ func (s *ServiceTestSuite) TestUpdate() {
 		s.storage.EXPECT().getByID(gomock.Any(), uint64(123)).Return(entityOld, nil)
 		s.storage.EXPECT().update(gomock.Any(), gomock.Eq(&entityNew)).Return(nil)
 
-		res, err := s.service.Update(context.Background(), req)
+		err := s.service.Update(context.Background(), req)
 		assert.NoError(s.T(), err)
-		assert.Equal(s.T(), entityNew, res)
 	})
 
 	s.Run("update error - return it", func() {
 		s.storage.EXPECT().getByID(gomock.Any(), uint64(123)).Return(entityOld, nil)
 		s.storage.EXPECT().update(gomock.Any(), gomock.Eq(&entityNew)).Return(testErr)
 
-		res, err := s.service.Update(context.Background(), req)
+		err := s.service.Update(context.Background(), req)
 		assert.ErrorIs(s.T(), err, testErr)
-		assert.Empty(s.T(), res)
 	})
 
 	s.Run("get by id error - return it", func() {
 		s.storage.EXPECT().getByID(gomock.Any(), uint64(123)).Return(Exibillia{}, testErr)
 
-		res, err := s.service.Update(context.Background(), req)
+		err := s.service.Update(context.Background(), req)
 		assert.ErrorIs(s.T(), err, testErr)
-		assert.Empty(s.T(), res)
 	})
 }
 

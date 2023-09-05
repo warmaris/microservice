@@ -34,6 +34,20 @@ func (t *Tx) Exec(ctx context.Context, query string, args ...any) error {
 	return err
 }
 
+func (t *Tx) ExecWithID(ctx context.Context, query string, args ...any) (uint64, error) {
+	res, err := t.tx.ExecContext(ctx, query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	if num, _ := res.RowsAffected(); num == 0 {
+		return 0, ErrNoAffectedRows
+	}
+
+	id, err := res.LastInsertId()
+	return uint64(id), err
+}
+
 func (t *Tx) Begin(ctx context.Context, opts *sql.TxOptions) (*Tx, error) {
 	return nil, ErrNestedTxNotSupported
 }

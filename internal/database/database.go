@@ -20,6 +20,7 @@ type Connection interface {
 	Get(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 	Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 	Exec(ctx context.Context, query string, args ...any) error
+	ExecWithID(ctx context.Context, query string, args ...any) (uint64, error)
 	Begin(ctx context.Context, opts *sql.TxOptions) (*Tx, error)
 	Commit() error
 	Rollback() error

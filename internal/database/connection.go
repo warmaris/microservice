@@ -48,6 +48,20 @@ func (p *Pool) Exec(ctx context.Context, query string, args ...any) error {
 	return nil
 }
 
+func (p *Pool) ExecWithID(ctx context.Context, query string, args ...any) (uint64, error) {
+	res, err := p.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	if num, _ := res.RowsAffected(); num == 0 {
+		return 0, ErrNoAffectedRows
+	}
+
+	id, err := res.LastInsertId()
+	return uint64(id), err
+}
+
 func (p *Pool) Begin(ctx context.Context, opts *sql.TxOptions) (*Tx, error) {
 	tx, err := p.db.BeginTxx(ctx, opts)
 

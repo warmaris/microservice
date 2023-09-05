@@ -4,3 +4,6 @@ connections:
     password: rootpasswd
     addr: localhost:3306
     name: microservice
+
+  kafka:
+    brokers: localhost:9092

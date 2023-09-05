@@ -21,10 +21,10 @@ func NewStorage(conn database.Connection) Storage {
 	}
 }
 
-func (m *mysqlStorage) create(ctx context.Context, exibillia Exibillia) error {
+func (m *mysqlStorage) create(ctx context.Context, exibillia Exibillia) (uint64, error) {
 	const query = `INSERT INTO exibillia (name, description, tags) VALUES (?, ?, ?)`
 
-	return m.conn.Exec(ctx, query, exibillia.Name, exibillia.Description, tags(exibillia.Tags))
+	return m.conn.ExecWithID(ctx, query, exibillia.Name, exibillia.Description, tags(exibillia.Tags))
 }
 
 func (m *mysqlStorage) getByID(ctx context.Context, id uint64) (Exibillia, error) {
