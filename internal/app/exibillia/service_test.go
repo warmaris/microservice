@@ -28,6 +28,7 @@ func (s *ServiceTestSuite) SetupSuite() {
 }
 
 func (s *ServiceTestSuite) TestCreate() {
+	id := uint64(1)
 	entity := Exibillia{
 		Name:        "Test Name",
 		Description: "Test Description",
@@ -36,16 +37,16 @@ func (s *ServiceTestSuite) TestCreate() {
 	testErr := errors.New("test error")
 
 	s.Run("success", func() {
-		s.storage.EXPECT().create(gomock.Any(), entity).Return(1, nil)
+		s.storage.EXPECT().create(gomock.Any(), entity).Return(id, nil)
 
 		res, err := s.service.Create(context.Background(), entity)
 
 		assert.NoError(s.T(), err)
-		assert.Equal(s.T(), 1, res)
+		assert.Equal(s.T(), id, res)
 	})
 
 	s.Run("storage error - return it", func() {
-		s.storage.EXPECT().create(gomock.Any(), entity).Return(0, testErr)
+		s.storage.EXPECT().create(gomock.Any(), entity).Return(uint64(0), testErr)
 
 		res, err := s.service.Create(context.Background(), entity)
 
