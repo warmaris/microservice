@@ -5,6 +5,7 @@ package server
 import (
 	"context"
 	"microservice/internal/app/exibillia"
+	"microservice/internal/app/looncan"
 	v1 "microservice/pkg/v1"
 )
 
@@ -15,12 +16,24 @@ type ExibilliaService interface {
 	Delete(ctx context.Context, id uint64) error
 }
 
-type Server struct {
-	exibillia ExibilliaService
-
-	v1.UnimplementedExibilliaServiceServer
+type LooncanService interface {
+	GetByParent(ctx context.Context, parentID uint64, parentType looncan.ParentType) ([]looncan.Looncan, error)
+	GetAll(ctx context.Context) ([]looncan.Looncan, error)
 }
 
-func NewServer(exibillia ExibilliaService) *Server {
-	return &Server{exibillia: exibillia}
+type AcaerService interface {
+}
+
+type Server struct {
+	exibillia ExibilliaService
+	looncan   LooncanService
+	acaer     AcaerService
+
+	v1.UnimplementedExibilliaServiceServer
+	v1.UnimplementedLooncanServiceServer
+	v1.UnimplementedAcaerServiceServer
+}
+
+func NewServer(exibillia ExibilliaService, looncan LooncanService, acaer AcaerService) *Server {
+	return &Server{exibillia: exibillia, looncan: looncan, acaer: acaer}
 }

@@ -4,6 +4,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"microservice/internal/app/exibillia"
+	"microservice/internal/app/looncan"
 	"microservice/internal/config"
 	"microservice/internal/database"
 	"microservice/internal/server"
@@ -33,8 +34,9 @@ func main() {
 	zap.S().Info("db connected")
 
 	exibilliaService := exibillia.NewService(exibillia.NewStorage(db))
+	looncanService := looncan.NewService(looncan.NewStorage(db))
 
-	srv := server.NewServer(exibilliaService)
+	srv := server.NewServer(exibilliaService, looncanService)
 
 	zap.S().Info("running app")
 
@@ -45,6 +47,7 @@ func main() {
 	s := grpc.NewServer()
 
 	v1.RegisterExibilliaServiceServer(s, srv)
+	v1.RegisterLooncanServiceServer(s, srv)
 
 	zap.S().Info("server listening at %v", lis.Addr())
 	if err = s.Serve(lis); err != nil {

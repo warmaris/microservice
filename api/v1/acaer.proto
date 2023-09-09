@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package microservice;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "microservice/pkg/v1";
+
+service AcaerService {
+  rpc CreateSimple(CreateAcaerRequest) returns (google.protobuf.Empty) {}
+  rpc CreateTransaction(CreateAcaerRequest) returns (google.protobuf.Empty) {}
+  rpc CreateAggregate(CreateAcaerRequest) returns (google.protobuf.Empty) {}
+}
+
+message CreateAcaerRequest {
+  string name = 1;
+  string version = 2;
+}

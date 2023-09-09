@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package microservice;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "microservice/pkg/v1";
+
+service LooncanService {
+  rpc List(google.protobuf.Empty) returns (ListLooncanResponse) {}
+  rpc ListForParent(ListLooncanForParentRequest) returns (ListLooncanResponse) {}
+}
+
+message Looncan {
+  uint64 id = 1;
+  string name = 2;
+  string value = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message ListLooncanForParentRequest {
+  enum ParentType {
+    ParentUnspecified = 0;
+    ParentAcaer = 1;
+    ParentExibillia = 2;
+  }
+
+  uint64 parent_id = 1;
+  ParentType parent_type = 2;
+}
+
+message ListLooncanResponse {
+  repeated Looncan items = 1;
+}
