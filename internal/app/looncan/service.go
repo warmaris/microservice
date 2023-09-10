@@ -1,3 +1,6 @@
+// Package looncan provides sub-related entity and some methods:
+// - common methods for usage from related packages
+// - own methods for request handling
 package looncan
 
 import (

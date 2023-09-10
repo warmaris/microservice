@@ -2,7 +2,6 @@
 // Also, it shows how to:
 // - scaffold basic service with DI via constructor
 // - work with errors (logging, typed errors)
-// - return updated entity for API
 package exibillia
 
 import (

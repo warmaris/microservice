@@ -1,3 +1,7 @@
+// Package acaer provides creation of entity with related one.
+// It shows:
+// - ways to work with related entities from separated packages;
+// - two-layered validation.
 package acaer
 
 import (
@@ -30,12 +34,25 @@ func NewService(storage Storage, looncan LooncanService) *Service {
 	return &Service{storage: storage, looncan: looncan}
 }
 
+// CreateSimple uses method from related package. It's simple DI, but we cannot control any transaction here.
+// Additionally, there is implemented service-layer complex validation, based on data from storage.
 func (s *Service) CreateSimple(ctx context.Context, name, version string) error {
-	// todo: add version validation
-
 	entity := Acaer{
 		Name:    name,
 		Version: version,
+	}
+
+	versions, err := s.storage.getVersions(ctx)
+	if err != nil {
+		zap.S().Errorw("get allowed versions", "error", err)
+
+		return err
+	}
+
+	validator := NewValidator(versions)
+	err = validator.Validate(entity)
+	if err != nil {
+		return err
 	}
 
 	id, err := s.storage.create(ctx, entity)
@@ -63,6 +80,9 @@ func (s *Service) CreateSimple(ctx context.Context, name, version string) error 
 	return err
 }
 
+// CreateTransaction uses internal DTO instead of imported entity to work with storage.
+// Transaction control implemented in storage, so we can use any storage methods in transaction without leaking Tx into
+// business code. Storage works with whole database structure, makes queries to any table, not only one for the main entity.
 func (s *Service) CreateTransaction(ctx context.Context, name, version string) error {
 	st, err := s.storage.begin(ctx)
 	if err != nil {
@@ -114,6 +134,8 @@ func (s *Service) CreateTransaction(ctx context.Context, name, version string) e
 	return err
 }
 
+// CreateAggregate uses DDD-like root aggregation and just one method of storage.
+// Transaction implemented inside the method. Storage also has access to any table.
 func (s *Service) CreateAggregate(ctx context.Context, name, version string) error {
 	entity := Acaer{
 		Name:    name,

@@ -4,8 +4,12 @@ package server
 
 import (
 	"context"
+	"errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"microservice/internal/app/exibillia"
 	"microservice/internal/app/looncan"
+	errt "microservice/internal/errors"
 	v1 "microservice/pkg/v1"
 )
 
@@ -22,6 +26,9 @@ type LooncanService interface {
 }
 
 type AcaerService interface {
+	CreateSimple(ctx context.Context, name, version string) error
+	CreateTransaction(ctx context.Context, name, version string) error
+	CreateAggregate(ctx context.Context, name, version string) error
 }
 
 type Server struct {
@@ -36,4 +43,17 @@ type Server struct {
 
 func NewServer(exibillia ExibilliaService, looncan LooncanService, acaer AcaerService) *Server {
 	return &Server{exibillia: exibillia, looncan: looncan, acaer: acaer}
+}
+
+func (s *Server) handleError(err error) error {
+	if errors.As(err, &errt.NotFoundError{}) {
+		return status.Error(codes.NotFound, err.Error())
+	}
+	if errors.As(err, &errt.ValidationError{}) {
+		return status.Error(codes.FailedPrecondition, err.Error())
+	}
+	if err != nil {
+		return status.Error(codes.Internal, err.Error())
+	}
+	return nil
 }
