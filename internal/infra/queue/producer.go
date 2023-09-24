@@ -18,11 +18,17 @@ func NewProducer(brokers []string) (*Producer, error) {
 	return &Producer{conn: pr}, nil
 }
 
-func (p *Producer) Produce(topic, key string, value []byte) error {
+func (p *Producer) Produce(topic, key string, value []byte, msgType string) error {
 	partition, offset, err := p.conn.SendMessage(&sarama.ProducerMessage{
 		Topic: topic,
 		Key:   sarama.StringEncoder(key),
 		Value: sarama.ByteEncoder(value),
+		Headers: []sarama.RecordHeader{
+			{
+				Key: []byte("type"),
+				Value: []byte(msgType),
+			},
+		},
 	})
 
 	if err == nil {

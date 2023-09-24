@@ -26,6 +26,9 @@ func (t *Tx) Select(ctx context.Context, dest interface{}, query string, args ..
 
 func (t *Tx) Exec(ctx context.Context, query string, args ...any) error {
 	res, err := t.tx.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
 
 	if num, _ := res.RowsAffected(); num == 0 {
 		return ErrNoAffectedRows

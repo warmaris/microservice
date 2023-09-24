@@ -30,3 +30,17 @@ create table acaer (
     version varchar(16) not null references acaer_versions(version)
 );
 
+CREATE TABLE jarklin (
+    id BIGINT primary key auto_increment,
+    name varchar(32) not null,
+    created_at timestamp not null default current_timestamp
+);
+
+create table jarklin_events (
+    message_id varchar(36) primary key,
+    entity_id bigint not null references jarklin(id),
+    payload json,
+    created_at timestamp not null,
+    status int not null default 0,
+    status_info text
+);

@@ -4,9 +4,11 @@
 .Trash-*
 .nfs*
 .idea
+.vscode
 *.iml
 out
 gen
+__debug_*
 *.exe
 *.exe~
 *.dll

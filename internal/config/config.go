@@ -2,9 +2,11 @@ package config
 
 import (
 	"fmt"
+	"microservice/internal/cron"
+	"strings"
+
 	"github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
-	"strings"
 )
 
 func InitConfig() error {
@@ -33,4 +35,17 @@ func GetDB() string {
 
 func GetKafkaBrokers() []string {
 	return strings.Split(viper.GetString("connections.kafka.brokers"), ",")
+}
+
+func GetKafkaConsumerGroupName() string {
+	return viper.GetString("connections.kafka.group_name")
+}
+
+func GetCronJobs() cron.JobConfig {
+	jobs := make(cron.JobConfig)
+	for name, schedule := range viper.GetStringMapString("cron") {
+		jobs[cron.JobName(name)] = cron.JobSchedule(schedule)
+	}
+
+	return jobs
 }

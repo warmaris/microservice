@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package microservice;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "microservice/pkg/v1";
+
+service JarklinService {
+  rpc CreateAndSend(CreateJarklinRequest) returns (google.protobuf.Empty) {}
+  rpc CreateAndSave(CreateJarklinRequest) returns (google.protobuf.Empty) {}
+}
+
+
+message CreateJarklinRequest {
+  string name = 1;
+}

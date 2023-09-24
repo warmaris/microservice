@@ -31,18 +31,25 @@ type AcaerService interface {
 	CreateAggregate(ctx context.Context, name, version string) error
 }
 
+type JarklinService interface {
+	CreateAndSend(ctx context.Context, name string) error
+	CreateAndSave(ctx context.Context, name string) error
+}
+
 type Server struct {
 	exibillia ExibilliaService
 	looncan   LooncanService
 	acaer     AcaerService
+	jarklin JarklinService
 
 	v1.UnimplementedExibilliaServiceServer
 	v1.UnimplementedLooncanServiceServer
 	v1.UnimplementedAcaerServiceServer
+	v1.UnimplementedJarklinServiceServer
 }
 
-func NewServer(exibillia ExibilliaService, looncan LooncanService, acaer AcaerService) *Server {
-	return &Server{exibillia: exibillia, looncan: looncan, acaer: acaer}
+func NewServer(exibillia ExibilliaService, looncan LooncanService, acaer AcaerService, jarklin JarklinService) *Server {
+	return &Server{exibillia: exibillia, looncan: looncan, acaer: acaer, jarklin: jarklin}
 }
 
 func (s *Server) handleError(err error) error {

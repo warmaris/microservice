@@ -6,4 +6,8 @@ connections:
     name: microservice
 
   kafka:
-    brokers: localhost:9092
+    brokers: localhost:29092
+    group_name: microservice-1
+
+cron:
+  jarklin.send_new_events: "* * * * *"
